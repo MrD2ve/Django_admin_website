@@ -17,34 +17,35 @@ def dictfetchone(cursor):
     return dict(zip(columns, row))
 
 
-def get_faculties():
+def get_categories():
     with closing(connection.cursor()) as cursor:
-        cursor.execute("""SELECT * from adminapp_faculty""")
-        faculties = dictfetchall(cursor)
-        return faculties
+        cursor.execute("""SELECT * from food_category""")
+        categories = dictfetchall(cursor)
+        return categories
 
 
-def get_groups():
+def get_products():
     with closing(connection.cursor()) as cursor:
-        cursor.execute("""SELECT adminapp_group.id, adminapp_group.name, adminapp_faculty.name as faculty
-         from adminapp_group left join adminapp_faculty on adminapp_group.faculty_id = adminapp_faculty.id
+        cursor.execute("""SELECT food_product.id, food_product.title, food_category.name as category
+         from food_products left join food_category on food_products.category_id = food_category.id, food_products.description,
+         food_products.cost, food_products.price, food_products.image, food_products.created_at
          """)
-        groups = dictfetchall(cursor)
-        return groups
+        products = dictfetchall(cursor)
+        return products
 
 
-def get_kafedra():
+def get_users():
     with closing(connection.cursor()) as cursor:
-        cursor.execute("""SELECT * from adminapp_kafedra""")
-        kafedra = dictfetchall(cursor)
-        return kafedra
+        cursor.execute("""SELECT * from food_customer""")
+        users = dictfetchall(cursor)
+        return users
 
 
-def get_subject():
+def get_orders():
     with closing(connection.cursor()) as cursor:
         cursor.execute("""SELECT * from adminapp_subject""")
-        subjects = dictfetchall(cursor)
-        return subjects
+        orders = dictfetchall(cursor)
+        return orders
 
 
 def get_teacher():

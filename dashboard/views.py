@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from .models import *
+from food.models import *
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from .forms import *
@@ -27,20 +27,16 @@ def login_page(request):
 
 @login_required_decorator
 def home_page(request):
-    faculties = services.get_faculties()
-    kafedras = services.get_kafedra()
-    subjects = services.get_subject()
-    teachers = services.get_teacher()
-    groups = services.get_groups()
-    students = services.get_student()
+    categorys = services.get_faculties()
+    products = services.get_kafedra()
+    users = services.get_subject()
+    orders = services.get_teacher()
     ctx={
         'counts' : {
-            'faculties':len(faculties),
-            'kafedras':len(kafedras),
-            'subjects':len(subjects),
-            'teachers':len(teachers),
-            'groups':len(groups),
-            'students':len(students)
+            'categorys':len(categorys),
+            'products':len(products),
+            'users':len(users),
+            'orders':len(orders),
         }
     }
     return render(request, 'index.html', ctx)
