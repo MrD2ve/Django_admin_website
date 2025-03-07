@@ -27,10 +27,10 @@ def login_page(request):
 
 @login_required_decorator
 def home_page(request):
-    categorys = services.get_faculties()
-    products = services.get_kafedra()
-    users = services.get_subject()
-    orders = services.get_teacher()
+    categorys = services.get_categories()
+    products = services.get_products()
+    users = services.get_users()
+    orders = services.get_orders()
     ctx={
         'counts' : {
             'categorys':len(categorys),
@@ -39,319 +39,217 @@ def home_page(request):
             'orders':len(orders),
         }
     }
-    return render(request, 'index.html', ctx)
+    return render(request, 'dashboard/index.html', ctx)
 
 @login_required_decorator
-def faculty_create(request):
-    model = Faculty()
-    form = FacultyForm(request.POST or None, instance=model)
+def category_create(request):
+    model = Category()
+    form = CategoryForm(request.POST or None, instance=model)
     if request.POST and form.is_valid():
         form.save()
         actions = request.session.get('actions', [])
-        actions += [f"You created faculty: {request.POST.get('name')}"]
+        actions += [f"You created category: {request.POST.get('name')}"]
         request.session["actions"] = actions
 
-        faculty_count = request.session.get('faculty_count', 0)
-        faculty_count += 1
-        request.session["faculty_count"] = faculty_count
-        return redirect('faculty_list')
+        category_count = request.session.get('category_count', 0)
+        category_count += 1
+        request.session["category_count"] = category_count
+        return redirect('category_list')
     ctx = {
         "model":model,
         "form":form
     }
-    return render(request,'faculty/form.html',ctx)
+    return render(request,'category/form.html',ctx)
 
 @login_required_decorator
-def faculty_edit(request,pk):
-    model = Faculty.objects.get(pk=pk)
-    form = FacultyForm(request.POST or None, instance=model)
+def category_edit(request,pk):
+    model = Category.objects.get(pk=pk)
+    form = CategoryForm(request.POST or None, instance=model)
     if request.POST and form.is_valid():
         form.save()
         actions = request.session.get('actions', [])
-        actions += [f"You edited faculty: {request.POST.get('name')}"]
+        actions += [f"You edited category: {request.POST.get('name')}"]
         request.session["actions"] = actions
-        return redirect('faculty_list')
+        return redirect('category_list')
     ctx = {
         "model":model,
         "form":form
     }
-    return render(request,'faculty/form.html',ctx)
+    return render(request,'category/form.html',ctx)
 
 @login_required_decorator
-def faculty_delete(request,pk):
-    model = Faculty.objects.get(pk=pk)
+def category_delete(request,pk):
+    model = Category.objects.get(pk=pk)
     model.delete()
-    return redirect('faculty_list')
+    return redirect('category_list')
 
 @login_required_decorator
-def faculty_list(request):
-    faculties=services.get_faculties()
-    print(faculties)
+def category_list(request):
+    categories=services.get_categories()
+    print(categories)
     ctx={
-        "faculties":faculties
+        "categories":categories
     }
-    return render(request,'faculty/list.html',ctx)
+    return render(request,'category/list.html',ctx)
 
-# KAFEDRA
+# Product
 @login_required_decorator
-def kafedra_create(request):
-    model = Kafedra()
-    form = KafedraForm(request.POST or None, instance=model)
+def product_create(request):
+    model = Product()
+    form = ProductForm(request.POST or None, instance=model)
     if request.POST and form.is_valid():
         form.save()
 
         actions = request.session.get('actions',[])
-        actions += [f"You created kafedra: {request.POST.get('name')}"]
+        actions += [f"You created product: {request.POST.get('name')}"]
         request.session["actions"] = actions
 
-        kafedra_count = request.session.get('kafedra_count', 0)
-        kafedra_count +=1
-        request.session["kafedra_count"] = kafedra_count
+        product_count = request.session.get('product_count', 0)
+        product_count +=1
+        request.session["product_count"] = product_count
 
-        return redirect('kafedra_list')
+        return redirect('product_list')
 
 
     ctx = {
         "model":model,
         "form":form
     }
-    return render(request,'kafedra/form.html',ctx)
+    return render(request,'product/form.html',ctx)
 
 @login_required_decorator
-def kafedra_edit(request,pk):
-    model = Kafedra.objects.get(pk=pk)
-    form = KafedraForm(request.POST or None, instance=model)
+def product_edit(request,pk):
+    model = Product.objects.get(pk=pk)
+    form = ProductForm(request.POST or None, instance=model)
     if request.POST and form.is_valid():
         form.save()
 
         actions = request.session.get('actions',[])
-        actions += [f"You edited kafedra: {request.POST.get('name')}"]
+        actions += [f"You edited product: {request.POST.get('name')}"]
         request.session["actions"] = actions
-        return redirect('kafedra_list')
+        return redirect('product_list')
 
     ctx = {
         "model":model,
         "form":form
     }
-    return render(request,'kafedra/form.html',ctx)
+    return render(request,'product/form.html',ctx)
 
 @login_required_decorator
-def kafedra_delete(request,pk):
-    model = Kafedra.objects.get(pk=pk)
+def product_delete(request,pk):
+    model = Product.objects.get(pk=pk)
     model.delete()
-    return redirect('kafedra_list')
+    return redirect('product_list')
 
 @login_required_decorator
-def kafedra_list(request):
-    kafedras=services.get_kafedra()
+def product_list(request):
+    products=services.get_product()
     ctx={
-        "kafedras":kafedras
+        "products":products
     }
-    return render(request,'kafedra/list.html',ctx)
+    return render(request,'product/list.html',ctx)
 
-#SUBJECT
+#Customer
 @login_required_decorator
-def subject_create(request):
-    model = Subject()
-    form = SubjectForm(request.POST or None, instance=model)
+def customer_create(request):
+    model = Customer()
+    form = CustomerForm(request.POST or None, instance=model)
     if request.POST and form.is_valid():
         form.save()
         actions = request.session.get('actions', [])
-        actions += [f"You created subject: {request.POST.get('name')}"]
+        actions += [f"You created customer: {request.POST.get('name')}"]
         request.session["actions"] = actions
 
-        subject_count = request.session.get('subject_count', 0)
-        subject_count += 1
-        request.session["subject_count"] = subject_count
-        return redirect('subject_list')
+        customer_count = request.session.get('customer_count', 0)
+        customer_count += 1
+        request.session["customer_count"] = customer_count
+        return redirect('customer_list')
     ctx = {
         "model":model,
         "form":form
     }
-    return render(request,'subject/form.html',ctx)
+    return render(request,'customer/form.html',ctx)
 
 @login_required_decorator
-def subject_edit(request,pk):
-    model = Subject.objects.get(pk=pk)
-    form = SubjectForm(request.POST or None, instance=model)
+def customer_edit(request,pk):
+    model = Customer.objects.get(pk=pk)
+    form = CustomerForm(request.POST or None, instance=model)
     if request.POST and form.is_valid():
         form.save()
         actions = request.session.get('actions', [])
-        actions += [f"You edited subject: {request.POST.get('name')}"]
+        actions += [f"You edited customer: {request.POST.get('name')}"]
         request.session["actions"] = actions
-        return redirect('subject_list')
+        return redirect('customer_list')
     ctx = {
         "model":model,
         "form":form
     }
-    return render(request,'subject/form.html',ctx)
+    return render(request,'customer/form.html',ctx)
 
 @login_required_decorator
-def subject_delete(request,pk):
-    model = Subject.objects.get(pk=pk)
+def customer_delete(request,pk):
+    model = Customer.objects.get(pk=pk)
     model.delete()
-    return redirect('subject_list')
+    return redirect('customer_list')
 
 @login_required_decorator
-def subject_list(request):
-    subjects=services.get_subject()
+def customer_list(request):
+    customers=services.get_customer()
     ctx={
-        "subjects":subjects
+        "customers":customers
     }
-    return render(request,'subject/list.html',ctx)
+    return render(request,'customer/list.html',ctx)
 
-#TEACHER
+#Order
 @login_required_decorator
-def teacher_create(request):
-    model = Teacher()
-    form = TeacherForm(request.POST or None, instance=model)
+def order_create(request):
+    model = Order()
+    form = OrderForm(request.POST or None, instance=model)
     if request.POST and form.is_valid():
         form.save()
         actions = request.session.get('actions', [])
-        actions += [f"You created teacher: {request.POST.get('name')}"]
+        actions += [f"You created order: {request.POST.get('name')}"]
         request.session["actions"] = actions
 
-        teacher_count = request.session.get('teacher_count', 0)
-        teacher_count += 1
-        request.session["teacher_count"] = teacher_count
-        return redirect('teacher_list')
+        order_count = request.session.get('order_count', 0)
+        order_count += 1
+        request.session["order_count"] = order_count
+        return redirect('order_list')
     ctx = {
         "model":model,
         "form":form
     }
-    return render(request,'teacher/form.html',ctx)
+    return render(request,'order/form.html',ctx)
 
 @login_required_decorator
-def teacher_edit(request,pk):
-    model = Teacher.objects.get(pk=pk)
-    form = TeacherForm(request.POST or None, instance=model)
+def order_edit(request,pk):
+    model = Order.objects.get(pk=pk)
+    form = OrderForm(request.POST or None, instance=model)
     if request.POST and form.is_valid():
         form.save()
         actions = request.session.get('actions', [])
-        actions += [f"You edited teacher: {request.POST.get('name')}"]
+        actions += [f"You edited order: {request.POST.get('name')}"]
         request.session["actions"] = actions
-        return redirect('teacher_list')
+        return redirect('order_list')
     ctx = {
         "model":model,
         "form":form
     }
-    return render(request,'teacher/form.html',ctx)
+    return render(request,'order/form.html',ctx)
 
 @login_required_decorator
-def teacher_delete(request,pk):
-    model = Teacher.objects.get(pk=pk)
+def order_delete(request,pk):
+    model = Order.objects.get(pk=pk)
     model.delete()
-    return redirect('teacher_list')
+    return redirect('order_list')
 
 @login_required_decorator
-def teacher_list(request):
-    teachers=services.get_teacher()
+def order_list(request):
+    orders=services.get_order()
     ctx={
-        "teachers":teachers
+        "orders":orders
     }
-    return render(request,'teacher/list.html',ctx)
-
-#GROUP
-@login_required_decorator
-def group_create(request):
-    model = Group()
-    form = GroupForm(request.POST or None, instance=model)
-    if request.POST and form.is_valid():
-        form.save()
-        actions = request.session.get('actions', [])
-        actions += [f"You created group: {request.POST.get('name')}"]
-        request.session["actions"] = actions
-
-        group_count = request.session.get('group_count', 0)
-        group_count += 1
-        request.session["group_count"] = group_count
-        return redirect('group_list')
-    ctx = {
-        "model":model,
-        "form":form
-    }
-    return render(request,'group/form.html',ctx)
-
-@login_required_decorator
-def group_edit(request,pk):
-    model = Group.objects.get(pk=pk)
-    form = GroupForm(request.POST or None, instance=model)
-    if request.POST and form.is_valid():
-        form.save()
-        actions = request.session.get('actions', [])
-        actions += [f"You edited group: {request.POST.get('name')}"]
-        request.session["actions"] = actions
-        return redirect('group_list')
-    ctx = {
-        "model":model,
-        "form":form
-    }
-    return render(request,'group/form.html',ctx)
-
-@login_required_decorator
-def group_delete(request,pk):
-    model = Group.objects.get(pk=pk)
-    model.delete()
-    return redirect('group_list')
-
-@login_required_decorator
-def group_list(request):
-    groups=services.get_groups()
-    ctx={
-        "groups":groups
-    }
-    return render(request,'group/list.html',ctx)
-
-#STUDENT
-@login_required_decorator
-def student_create(request):
-    model = Student()
-    form = StudentForm(request.POST or None, request.FILES or None, instance=model)
-    if request.POST and form.is_valid():
-        form.save()
-        actions = request.session.get('actions', [])
-        actions += [f"You created student: {request.POST.get('name')}"]
-        request.session["actions"] = actions
-
-        student_count = request.session.get('student_count', 0)
-        student_count += 1
-        request.session["student_count"] = student_count
-        return redirect('student_list')
-    ctx = {
-        "model":model,
-        "form":form
-    }
-    return render(request,'student/form.html',ctx)
-
-@login_required_decorator
-def student_edit(request,pk):
-    model = Student.objects.get(pk=pk)
-    form = StudentForm(request.POST or None,request.FILES or None, instance=model)
-    if request.POST and form.is_valid():
-        form.save()
-        actions = request.session.get('actions', [])
-        actions += [f"You edited student: {request.POST.get('name')}"]
-        request.session["actions"] = actions
-        return redirect('student_list')
-    ctx = {
-        "model":model,
-        "form":form
-    }
-    return render(request,'student/form.html',ctx)
-
-@login_required_decorator
-def student_delete(request,pk):
-    model = Student.objects.get(pk=pk)
-    model.delete()
-    return redirect('student_list')
-
-@login_required_decorator
-def student_list(request):
-    students=services.get_student()
-    ctx={
-        "students":students
-    }
-    return render(request,'student/list.html',ctx)
+    return render(request,'order/list.html',ctx)
 
 @login_required_decorator
 def profile(request):

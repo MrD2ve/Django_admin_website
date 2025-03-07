@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=100)),
-                ('faculty', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='dashboard.faculty')),
+                ('category', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='dashboard.category')),
             ],
         ),
         migrations.CreateModel(
