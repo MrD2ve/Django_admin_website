@@ -19,7 +19,7 @@ class ProductForm(forms.ModelForm):
         "category": forms.Select(attrs={'class': 'form-control'}),
         "price": forms.NumberInput(attrs={'class': 'form-control'}),
         "cost": forms.NumberInput(attrs={'class': 'form-control'}),
-        "image": forms.FileInput(attrs={'class': 'form-control', 'onchange': 'LoadFile(event)'})
+        "image": forms.FileInput(attrs={'class': 'form-control', 'onchange': 'loadFile(event)'})
         }
 
 class CustomerForm(forms.ModelForm):

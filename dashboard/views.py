@@ -35,7 +35,7 @@ def home_page(request):
         categories_products.append(
             {
                 "category": category.title,
-                "product": len(Product.object.filter(category_id=category.id))
+                "product": len(Product.objects.filter(category_id=category.id))
             }
         )
     ctx={
@@ -105,44 +105,30 @@ def category_list(request):
 @login_required_decorator
 def product_create(request):
     model = Product()
-    form = ProductForm(request.POST or None, instance=model)
+    form = ProductForm(request.POST or None, request.FILES or None, instance=model)
+
     if request.POST and form.is_valid():
         form.save()
-
-        actions = request.session.get('actions',[])
-        actions += [f"You created product: {request.POST.get('title')}"]
-        request.session["actions"] = actions
-
-        product_count = request.session.get('product_count', 0)
-        product_count +=1
-        request.session["product_count"] = product_count
-
         return redirect('product_list')
-
-
     ctx = {
-        "model":model,
-        "form":form
+        'model': model,
+        'form': form
     }
-    return render(request,'dashboard/product/form.html',ctx)
+    return render(request, 'dashboard/product/form.html', ctx)
 
 @login_required_decorator
 def product_edit(request,pk):
     model = Product.objects.get(pk=pk)
-    form = ProductForm(request.POST or None, instance=model)
+    form = ProductForm(request.POST or None, request.FILES or None, instance=model)
+
     if request.POST and form.is_valid():
         form.save()
-
-        actions = request.session.get('actions',[])
-        actions += [f"You edited product: {request.POST.get('title')}"]
-        request.session["actions"] = actions
         return redirect('product_list')
-
     ctx = {
-        "model":model,
-        "form":form
+        'model': model,
+        'form': form
     }
-    return render(request,'dashboard/product/form.html',ctx)
+    return render(request, 'dashboard/product/form.html', ctx)
 
 @login_required_decorator
 def product_delete(request,pk):
@@ -154,7 +140,7 @@ def product_delete(request,pk):
 def product_list(request):
     products=Product.objects.all()
     ctx={
-        "products":products
+        "product":products
     }
     return render(request,'dashboard/product/list.html',ctx)
 #Customer
