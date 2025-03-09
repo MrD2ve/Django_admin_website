@@ -8,36 +8,45 @@ from . import services
 def login_required_decorator(func):
     return login_required(func,login_url='login_page')
 
+def login_page(request):
+    if request.POST:
+        username =request.POST.get("username",None)
+        password = request.POST.get("password", None)
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('main_dashboard')
+    return render(request,'dashboard/login.html')
+
 @login_required_decorator
 def logout_page(request):
     logout(request)
-    return redirect("login_page")
-
-
-def login_page(request):
-    if request.POST:
-        username=request.POST.get('username')
-        password=request.POST.get('password')
-        user = authenticate(request, password=password, username=username)
-        if user is not None:
-            login(request, user)
-            return redirect("home_page")
-
-    return render(request, 'login.html')
+    return redirect('login_page')
 
 @login_required_decorator
 def home_page(request):
-    categorys = services.get_categories()
-    products = services.get_products()
-    users = services.get_users()
-    orders = services.get_orders()
+    categories = Category.objects.all()
+    products = Product.objects.all()
+    customers = Customer.objects.all()
+    orders = Order.objects.all()
+    categories_products = []
+    table_list = services.get_table()
+    for category in categories:
+        categories_products.append(
+            {
+                "category": category.title,
+                "product": len(Product.object.filter(category_id=category.id))
+            }
+        )
     ctx={
         'counts' : {
-            'categorys':len(categorys),
+            'categories':len(categories),
             'products':len(products),
-            'users':len(users),
+            'users':len(customers),
             'orders':len(orders),
-        }
+        },
+        "categories_products": categories_products,
+        "tabel_list": table_list
     }
     return render(request, 'dashboard/index.html', ctx)
 
@@ -48,7 +57,7 @@ def category_create(request):
     if request.POST and form.is_valid():
         form.save()
         actions = request.session.get('actions', [])
-        actions += [f"You created category: {request.POST.get('name')}"]
+        actions += [f"You created category: {request.POST.get('title')}"]
         request.session["actions"] = actions
 
         category_count = request.session.get('category_count', 0)
@@ -59,7 +68,7 @@ def category_create(request):
         "model":model,
         "form":form
     }
-    return render(request,'category/form.html',ctx)
+    return render(request,'dashboard/category/form.html',ctx)
 
 @login_required_decorator
 def category_edit(request,pk):
@@ -68,14 +77,14 @@ def category_edit(request,pk):
     if request.POST and form.is_valid():
         form.save()
         actions = request.session.get('actions', [])
-        actions += [f"You edited category: {request.POST.get('name')}"]
+        actions += [f"You edited category: {request.POST.get('title')}"]
         request.session["actions"] = actions
         return redirect('category_list')
     ctx = {
         "model":model,
         "form":form
     }
-    return render(request,'category/form.html',ctx)
+    return render(request,'dashboard/category/form.html',ctx)
 
 @login_required_decorator
 def category_delete(request,pk):
@@ -85,12 +94,12 @@ def category_delete(request,pk):
 
 @login_required_decorator
 def category_list(request):
-    categories=services.get_categories()
+    categories=Category.objects.all()
     print(categories)
     ctx={
         "categories":categories
     }
-    return render(request,'category/list.html',ctx)
+    return render(request,'dashboard/category/list.html',ctx)
 
 # Product
 @login_required_decorator
@@ -101,7 +110,7 @@ def product_create(request):
         form.save()
 
         actions = request.session.get('actions',[])
-        actions += [f"You created product: {request.POST.get('name')}"]
+        actions += [f"You created product: {request.POST.get('title')}"]
         request.session["actions"] = actions
 
         product_count = request.session.get('product_count', 0)
@@ -115,7 +124,7 @@ def product_create(request):
         "model":model,
         "form":form
     }
-    return render(request,'product/form.html',ctx)
+    return render(request,'dashboard/product/form.html',ctx)
 
 @login_required_decorator
 def product_edit(request,pk):
@@ -125,7 +134,7 @@ def product_edit(request,pk):
         form.save()
 
         actions = request.session.get('actions',[])
-        actions += [f"You edited product: {request.POST.get('name')}"]
+        actions += [f"You edited product: {request.POST.get('title')}"]
         request.session["actions"] = actions
         return redirect('product_list')
 
@@ -133,7 +142,7 @@ def product_edit(request,pk):
         "model":model,
         "form":form
     }
-    return render(request,'product/form.html',ctx)
+    return render(request,'dashboard/product/form.html',ctx)
 
 @login_required_decorator
 def product_delete(request,pk):
@@ -143,49 +152,12 @@ def product_delete(request,pk):
 
 @login_required_decorator
 def product_list(request):
-    products=services.get_product()
+    products=Product.objects.all()
     ctx={
         "products":products
     }
-    return render(request,'product/list.html',ctx)
-
+    return render(request,'dashboard/product/list.html',ctx)
 #Customer
-@login_required_decorator
-def customer_create(request):
-    model = Customer()
-    form = CustomerForm(request.POST or None, instance=model)
-    if request.POST and form.is_valid():
-        form.save()
-        actions = request.session.get('actions', [])
-        actions += [f"You created customer: {request.POST.get('name')}"]
-        request.session["actions"] = actions
-
-        customer_count = request.session.get('customer_count', 0)
-        customer_count += 1
-        request.session["customer_count"] = customer_count
-        return redirect('customer_list')
-    ctx = {
-        "model":model,
-        "form":form
-    }
-    return render(request,'customer/form.html',ctx)
-
-@login_required_decorator
-def customer_edit(request,pk):
-    model = Customer.objects.get(pk=pk)
-    form = CustomerForm(request.POST or None, instance=model)
-    if request.POST and form.is_valid():
-        form.save()
-        actions = request.session.get('actions', [])
-        actions += [f"You edited customer: {request.POST.get('name')}"]
-        request.session["actions"] = actions
-        return redirect('customer_list')
-    ctx = {
-        "model":model,
-        "form":form
-    }
-    return render(request,'customer/form.html',ctx)
-
 @login_required_decorator
 def customer_delete(request,pk):
     model = Customer.objects.get(pk=pk)
@@ -194,49 +166,13 @@ def customer_delete(request,pk):
 
 @login_required_decorator
 def customer_list(request):
-    customers=services.get_customer()
+    customers=Customer.objects.all()
     ctx={
         "customers":customers
     }
-    return render(request,'customer/list.html',ctx)
+    return render(request,'dashboard/customer/list.html',ctx)
 
 #Order
-@login_required_decorator
-def order_create(request):
-    model = Order()
-    form = OrderForm(request.POST or None, instance=model)
-    if request.POST and form.is_valid():
-        form.save()
-        actions = request.session.get('actions', [])
-        actions += [f"You created order: {request.POST.get('name')}"]
-        request.session["actions"] = actions
-
-        order_count = request.session.get('order_count', 0)
-        order_count += 1
-        request.session["order_count"] = order_count
-        return redirect('order_list')
-    ctx = {
-        "model":model,
-        "form":form
-    }
-    return render(request,'order/form.html',ctx)
-
-@login_required_decorator
-def order_edit(request,pk):
-    model = Order.objects.get(pk=pk)
-    form = OrderForm(request.POST or None, instance=model)
-    if request.POST and form.is_valid():
-        form.save()
-        actions = request.session.get('actions', [])
-        actions += [f"You edited order: {request.POST.get('name')}"]
-        request.session["actions"] = actions
-        return redirect('order_list')
-    ctx = {
-        "model":model,
-        "form":form
-    }
-    return render(request,'order/form.html',ctx)
-
 @login_required_decorator
 def order_delete(request,pk):
     model = Order.objects.get(pk=pk)
@@ -245,12 +181,12 @@ def order_delete(request,pk):
 
 @login_required_decorator
 def order_list(request):
-    orders=services.get_order()
+    orders=Order.objects.all()
     ctx={
         "orders":orders
     }
-    return render(request,'order/list.html',ctx)
+    return render(request,'dashboard/order/list.html',ctx)
 
 @login_required_decorator
 def profile(request):
-    return render(request,'profile.html')
+    return render(request,'dashboard/profile.html')

@@ -14,9 +14,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="overview-wrap">
-                            <h2 class="title-1">Category List</h2>
-                            <a class="au-btn au-btn-icon au-btn--blue" href="{% url 'category_create' %}">
-                                <i class="zmdi zmdi-plus"></i>add</a>
+                            <h2 class="title-1">Order List</h2>
                         </div>
                     </div>
                 </div>
@@ -29,25 +27,24 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Name</th>
-                                        <th>Actions</th>
+                                        <th>Payment type</th>
+                                        <th>Status</th>
+                                        <th>Address</th>
+                                        <th>Created at</th>
+                                        <th>Customer</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for categories in category %}
+                                    {% for order in order %}
                                     <tr>
-                                        <td>{{ categories.id }}</td>
-                                        <td>{{ categories.name }}</td>
-                                        <td>
-                                            <div class="table-data-feature">
-                                                <a class="item" data-toggle="tooltip" href="{% url 'categories_edit' pk=faculty.id %}" data-placement="top" title="" data-original-title="Edit">
-                                                    <i class="zmdi zmdi-edit text-warning"></i>
-                                                </a>
-                                                <a class="item" data-toggle="tooltip" href="{% url 'categories_delete' pk=faculty.id %}" data-placement="top" title="" data-original-title="Delete">
-                                                    <i class="zmdi zmdi-delete text-danger"></i>
-                                                </a>
-                                            </div>
-                                        </td>
+                                        <td>{{ order.id }}</td>
+                                        <td>{{ order.payment_type }}</td>
+                                        <td>{{ order.status }}</td>
+                                        <td>{{ order.address }}</td>
+                                        <td>{{ order.created_at }}</td>
+                                        <td>{{ order.customer }}</td>
+
+
                                     </tr>
                                     {% endfor %}
                                 </tbody>

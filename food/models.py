@@ -41,14 +41,14 @@ class Order(models.Model):
     customer = models.ForeignKey(Customer, null=False, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"{self.customer}"
 
 
 class OrderProduct(models.Model):
-    first_name = models.CharField(max_length=100, null=False, blank=False)
-    last_name = models.CharField(max_length=100, null=False, blank=False)
-    age = models.IntegerField(null=False, blank=False)
+    count = models.IntegerField(null=False, blank=False)
+    price = models.IntegerField(null=False, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    product = models.ForeignKey(Product, null=False, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, null=False, on_delete=models.CASCADE)
 
 
 

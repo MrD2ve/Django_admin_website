@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
                 ('first_name', models.CharField(max_length=100)),
                 ('last_name', models.CharField(max_length=100)),
                 ('age', models.IntegerField()),
-                ('kafedra', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='dashboard.kafedra')),
+                ('customer', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='dashboard.customer')),
                 ('subject', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='dashboard.subject')),
             ],
         ),
@@ -59,7 +59,7 @@ class Migration(migrations.Migration):
                 ('first_name', models.CharField(max_length=100)),
                 ('last_name', models.CharField(max_length=100)),
                 ('age', models.IntegerField()),
-                ('group', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='dashboard.group')),
+                ('product', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='dashboard.product')),
             ],
         ),
     ]

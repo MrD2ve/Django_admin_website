@@ -1,6 +1,6 @@
 from django import forms
 from food.models import *
-from . import services
+
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
@@ -19,7 +19,7 @@ class ProductForm(forms.ModelForm):
         "category": forms.Select(attrs={'class': 'form-control'}),
         "price": forms.NumberInput(attrs={'class': 'form-control'}),
         "cost": forms.NumberInput(attrs={'class': 'form-control'}),
-        "image": forms.FileInput(attrs={'class': 'form-control'})
+        "image": forms.FileInput(attrs={'class': 'form-control', 'onchange': 'LoadFile(event)'})
         }
 
 class CustomerForm(forms.ModelForm):
@@ -27,7 +27,9 @@ class CustomerForm(forms.ModelForm):
         model = Customer
         fields= "__all__"
         widgets = {
-        "name":forms.TextInput(attrs={'class':'form-control'})
+        "first_name":forms.TextInput(attrs={'class':'form-control'}),
+        "last_name": forms.TextInput(attrs={'class': 'form-control'}),
+        "phone_number": forms.NumberInput(attrs={'class': 'form-control'})
         }
 
 class OrderForm(forms.ModelForm):
@@ -37,7 +39,7 @@ class OrderForm(forms.ModelForm):
         widgets = {
         "first_name":forms.TextInput(attrs={'class':'form-control'}),
         "last_name":forms.TextInput(attrs={'class':'form-control'}),
-        "age":forms.NumberInput(attrs={'class':'form-control'}),
-        "subject":forms.Select(attrs={'class':'form-control'}),
-        "kafedra":forms.Select(attrs={'class':'form-control'}),
+        "phone_number": forms.NumberInput(attrs={'class': 'form-control'}),
+        "product": forms.Select(attrs={'class': 'form-control'}),
+        "status":forms.NumberInput(attrs={'class':'form-control'}),
         }
