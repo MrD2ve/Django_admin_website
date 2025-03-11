@@ -15,7 +15,7 @@ def login_page(request):
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('main_dashboard')
+            return redirect('home_page')
     return render(request,'dashboard/login.html')
 
 @login_required_decorator
@@ -109,6 +109,13 @@ def product_create(request):
 
     if request.POST and form.is_valid():
         form.save()
+        actions = request.session.get('actions', [])
+        actions += [f"You created product: {request.POST.get('title')}"]
+        request.session["actions"] = actions
+
+        product_count = request.session.get('product_count', 0)
+        product_count += 1
+        request.session["product_count"] = product_count
         return redirect('product_list')
     ctx = {
         'model': model,

@@ -35,19 +35,20 @@
                                         <th>Price</th>
                                         <th>Cost</th>
                                         <th>Image</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for product in product %}
                                     <tr>
                                         <td>{{ product.id }}</td>
-                                        <td><img id="output" style="width:180px;height:180;" src="{% if product %}/media/{{ product.image }}{% endif %}"></td>
+
                                         <td>{{ product.title }}</td>
                                         <td>{{ product.description }}</td>
                                         <td>{{ product.category }}</td>
                                         <td>{{ product.price }}</td>
                                         <td>{{ product.cost }}</td>
-
+                                        <td><img id="output" style="width:100px;height:100px;" src="{% if product %}/media/{{ product.image }}{% endif %}"></td>
                                         <td>
                                             <div class="table-data-feature">
                                                 <a class="item" data-toggle="tooltip" href="{% url 'product_edit' pk=product.id %}" data-placement="top" title="" data-original-title="Edit">

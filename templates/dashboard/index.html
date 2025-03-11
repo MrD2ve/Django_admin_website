@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 <div class="row m-t-25">
-                    <div class="col-sm-6 col-lg-4">
+                    <div class="col-sm-6 col-lg-3">
                         <div class="overview-item overview-item--c1">
                             <div class="overview__inner">
                                 <div class="overview-box clearfix">
@@ -47,7 +47,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-lg-4">
+                    <div class="col-sm-6 col-lg-3">
                         <div class="overview-item overview-item--c2">
                             <div class="overview__inner">
                                 <div class="overview-box clearfix">
@@ -75,7 +75,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-lg-4">
+                    <div class="col-sm-6 col-lg-3">
                         <div class="overview-item overview-item--c3">
                             <div class="overview__inner">
                                 <div class="overview-box clearfix">
@@ -103,9 +103,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row m-t-25">
-                    <div class="col-sm-6 col-lg-4">
+                    <div class="col-sm-6 col-lg-3 ">
                         <div class="overview-item overview-item--c1">
                             <div class="overview__inner">
                                 <div class="overview-box clearfix">
@@ -133,8 +131,9 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
+
+
 
                 <div class="row">
 
@@ -146,16 +145,29 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="col-lg-6">
-                        <div class="au-card m-b-30">
-                            <div class="au-card-inner">
-                                <h3 class="title-2 m-b-40">Pie Chart</h3>
-                                <canvas id="pieChart1"></canvas>
-                            </div>
+                        <h3 class="text-center">Top Sold Products</h3>
+                        <div class="table-responsive m-b-40">
+                            <table class="table table-borderless table-data3">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Count</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for t in table_list %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ t.title }}</td>
+                                        <td>{{ t.count }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-
                 </div>
 
 
@@ -175,11 +187,11 @@
           var myChart = new Chart(ctx, {
             type: 'bar',
             data: {
-              labels: ["Faculty", "Kafedra", "Teacher", "Group", "Student"],
+              labels: [{% for cp in categories_products %}"{{ cp.category }}",{% endfor %}],
               datasets: [
                 {
-                  label: "University dataset",
-                  data: [{{ counts.faculties }}, {{ counts.kafedras }}, {{ counts.teachers }}, {{ counts.groups }}, {{ counts.students }}],
+                  label: "MaxWay dataset",
+                  data: [{% for cp in categories_products %}"{{ cp.product }}",{% endfor %}],
                   borderColor: "rgba(0, 123, 255, 0.9)",
                   borderWidth: "0",
                   backgroundColor: "rgba(0, 123, 255, 0.5)"
@@ -211,52 +223,6 @@
             }
           });
         }
-
-      } catch (error) {
-        console.log(error);
-      }
-
-      try {
-
-        //pie chart
-        var ctx = document.getElementById("pieChart1");
-        if (ctx) {
-          ctx.height = 200;
-          var myChart = new Chart(ctx, {
-            type: 'pie',
-            data: {
-              datasets: [{
-                  data: [{{ counts.faculties }}, {{ counts.kafedras }}, {{ counts.teachers }}, {{ counts.groups }}, {{ counts.students }}],
-                backgroundColor: [
-                  "rgba(0, 123, 255,0.9)",
-                  "rgba(0, 123, 255,0.7)",
-                  "rgba(0, 123, 255,0.5)",
-                  "rgba(0,0,0,0.07)"
-                ],
-                hoverBackgroundColor: [
-                  "rgba(0, 123, 255,0.9)",
-                  "rgba(0, 123, 255,0.7)",
-                  "rgba(0, 123, 255,0.5)",
-                  "rgba(0,0,0,0.07)"
-                ]
-
-              }],
-              labels: ["Faculty", "Kafedra", "Teacher", "Group", "Student"],
-
-            },
-            options: {
-              legend: {
-                position: 'top',
-                labels: {
-                  fontFamily: 'Poppins'
-                }
-
-              },
-              responsive: true
-            }
-          });
-        }
-
 
       } catch (error) {
         console.log(error);
