@@ -151,6 +151,36 @@ def product_list(request):
     }
     return render(request,'dashboard/product/list.html',ctx)
 #Customer
+
+@login_required_decorator
+def customer_create(request):
+    model = Customer()
+    form = CustomerForm(request.POST or None, instance=model)
+
+    if request.POST and form.is_valid():
+        form.save()
+        return redirect('customer_list')
+    ctx = {
+        'model':model,
+        'form': form
+    }
+    return render(request, 'dashboard/customer/form.html',ctx)
+
+@login_required_decorator
+def customer_edit(request, pk):
+    model = Customer.objects.get(pk=pk)
+    form = CustomerForm(request.POST or None, instance=model)
+
+    if request.POST and form.is_valid():
+        form.save()
+        return redirect('customer_list')
+    ctx = {
+        'model':model,
+        'form': form
+    }
+    return render(request, 'dashboard/customer/form.html',ctx)
+
+
 @login_required_decorator
 def customer_delete(request,pk):
     model = Customer.objects.get(pk=pk)
@@ -161,7 +191,7 @@ def customer_delete(request,pk):
 def customer_list(request):
     customers=Customer.objects.all()
     ctx={
-        "customers":customers
+        "customer":customers
     }
     return render(request,'dashboard/customer/list.html',ctx)
 
@@ -183,3 +213,19 @@ def order_list(request):
 @login_required_decorator
 def profile(request):
     return render(request,'dashboard/profile.html')
+
+@login_required_decorator
+def customer_order_list(request,id):
+    customer_orders = services.get_order_by_user(id=id)
+    ctx = {
+        'customer_orders': customer_orders
+    }
+    return render(request, "dashboard/customer_order/list.html", ctx)
+
+@login_required_decorator
+def orderproduct_list(request,id):
+    productorders = services.get_product_by_order(id=id)
+    ctx = {
+        'productorders': productorders
+    }
+    return render(request, "dashboard/productorder/list.html", ctx)

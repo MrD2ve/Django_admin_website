@@ -16,9 +16,13 @@ urlpatterns = [
     path('product/<int:pk>/delete/',product_delete, name='product_delete'),
     path('product/list/',product_list, name='product_list'),
 
+    path('customer/create/', customer_create, name="customer_create"),
+    path('customer/<int:pk>/edit/', customer_edit, name='customer_edit'),
     path('customer/<int:pk>/delete/',customer_delete, name='customer_delete'),
     path('customer/list/',customer_list, name='customer_list'),
+    path('customer_order/<int:id>/list/', customer_order_list, name="customer_order_list"),
 
+    path('orderproduct/<int:id>/list/', orderproduct_list, name="orderproduct_list"),
 
     path('order/list/',order_list, name='order_list'),
 

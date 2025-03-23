@@ -104,7 +104,7 @@
         <button class="close" onclick="modal()"><span></span></button>
         <div class="row">
 
-            <div class="col-12" id="order-list">
+            <div class="col-12" id="order-list1">
                 {% for order in orders %}
                 <div class="row">
                     <div class="col-12">
@@ -130,11 +130,10 @@
         </div>
         <div class="total">
             <div class="title">Jami:</div>
-            <div class="cost" id="total_price">{{ total_price|intcomma}} <span>UZS</span></div>
+            <div class="cost" id="total_price1">{{ total_price|intcomma}} <span>UZS</span></div>
         </div>
         <div class="buttons">
             <button class="clear" onclick="delete_orders()"><a href="{% url 'index' %}"> Очистить</a></button>
-            <button class="order" onclick="order_func()">Заказать</button>
         </div>
     </div>
                 <div class="shop--text">  <a href="#" onclick="modal()"> Korzina<br><span id="home_price">{{ total_price|intcomma}} <span>UZS</span></span></a></div>
@@ -142,12 +141,12 @@
             </div>
           </div>
         </div>
-    <form class="account" style="max-width: 400px; font-family: Arial, sans-serif;">
-
+    <form style="max-width: 400px; font-family: Arial, sans-serif;" id="second_form" class="account" method="post">
+    {% csrf_token %}
     <!-- Phone Number -->
         <div class="phone" style="margin-bottom: 15px; text-align: center;">
-            <label for="phone">Telefon raqam tekshirish*</label><br>
-            <input class="input" type="text" id="phone" placeholder="Ваш номер" style="
+            <label for="phone_number">Telefon raqam tekshirish*</label><br>
+            <input class="input" type="text" id="phone_number" name="phone_number" placeholder="Ваш номер" style="
                 width: 100%;
                 padding: 8px;
                 margin-left: 0;
@@ -159,14 +158,14 @@
         <!-- Name and Surname -->
         <div class="contact" style="margin-bottom: 15px; text-align: center;">
             <label>Ism va Familiya</label><br>
-            <input class="input" type="text" placeholder="Ism*" style="
+            <input class="input" type="text" name="first_name" id="first_name" placeholder="Ism*" style="
                 width: 100%;
                 margin-left: 0;
                 padding: 8px;
                 margin-top: 5px;
                 border: 1px solid #ccc;
                 border-radius: 5px;"><br>
-            <input class="input" type="text" placeholder="Familiya*" style="
+            <input class="input" type="text" name="last_name" id="last_name" placeholder="Familiya*" style="
                 width: 100%;
                 margin-left: 0;
                 padding: 8px;
@@ -192,7 +191,7 @@
                 align-items: center;">
                 <strong>Naqt Pul</strong>
 
-                <input type="radio" name="payment" value="naqt">
+                <input type="radio" name="payment_type"  value="naqt">
             </div>
 
             <div class="card" style="
@@ -204,14 +203,14 @@
                 align-items: center;
                 margin-top: 10px;">
                 <strong>Terminal orqali</strong>
-                <input type="radio" name="payment" value="terminal">
+                <input type="radio" name="payment_type"  value="terminal">
             </div>
         </div>
 
         <!-- Address -->
         <div class="div" style="margin-bottom: 15px; text-align: center;">
             <label for="address">«Address, Manzil»*</label><br>
-            <textarea class="text" id="address" cols="30" rows="3" placeholder="Manzilingizni kiriting..." style="
+            <textarea class="text" id="address" name="address" cols="30" rows="3" placeholder="Manzilingizni kiriting..." style="
                 width: 100%;
                 margin-left: 0;
                 padding: 8px;
@@ -233,10 +232,47 @@
             cursor: pointer;" class="button" id="order_btn" onclick="order_func()" type="button">
             Yuborish
         </button>
+    </form>
+    <div class="modal">
+                <div class="title">Заказы</div>
+                <button class="close" onclick="modal()"><span></span></button>
+                <div class="row">
+
+                    <div class="col-12" id="order-list">
+                        {% for order in orders %}
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="item">
+                                    <div class="box">
+                                        <div class="box__img"><img class="img" src="/media/{{ order.product.image }}" alt=""></div>
+                                        <div class="box__content">
+                                            <div class="box__title">{{ order.product.title}}</div>
+                                            <div class="box__text">{{ order.product.description}}</div>
+                                            <div class="box__const">
+                                                <div class="box__cost">{{order.count}} x {{ order.product.price }} UZS
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
 
 
-</form>
+                    </div>
+                </div>
+                <div class="total">
+                    <div class="title">Итого:</div>
+                    <div class="cost" id="total_price">{{ total_price|intcomma}} <span>UZS</span></div>
+                </div>
+                <div class="buttons">
 
+                    <button class="clear" onclick="delete_orders()"><a href="{% url 'index' %}">
+                    Очистить</a></button>
+                    <button class="order"><a href="{% url 'main_order' %}">Заказать</a></button>
+                </div>
+            </div>
 
 
     <script src="{% static 'food/js/app.js' %}"></script>

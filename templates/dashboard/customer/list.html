@@ -27,7 +27,10 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Name</th>
+                                        <th>First name</th>
+                                        <th>Last name</th>
+                                        <th>Phone number</th>
+                                        <th>Created at</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -35,7 +38,10 @@
                                     {% for customer in customer %}
                                     <tr>
                                         <td>{{ customer.id }}</td>
-                                        <td>{{ customer.name }}</td>
+                                        <td>{{ customer.first_name }}</td>
+                                        <td>{{ customer.last_name }}</td>
+                                        <td>{{ customer.phone_number }}</td>
+                                        <td>{{ customer.created_at }}</td>
                                         <td>
                                             <div class="table-data-feature">
                                                 <a class="item" data-toggle="tooltip" href="{% url 'customer_edit' pk=customer.id %}" data-placement="top" title="" data-original-title="Edit">
