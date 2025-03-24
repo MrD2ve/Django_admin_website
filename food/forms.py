@@ -1,7 +1,7 @@
 from django import forms
 from .models import *
 
-class CustomerFrom(forms.ModelForm):
+class CustomerForm(forms.ModelForm):
 
     class Meta:
         model = Customer
@@ -11,7 +11,7 @@ class CustomerFrom(forms.ModelForm):
 class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = "__all__"
+        fields = ('payment_type', 'status', 'address')
 
     def save(self, commit=True, *args, **kwargs):
         model = super().save(commit=False)

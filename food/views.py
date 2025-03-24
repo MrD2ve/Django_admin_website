@@ -1,4 +1,3 @@
-
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from config.settings import MEDIA_ROOT
@@ -18,61 +17,62 @@ def order_page(request):
         return JsonResponse(user)
 
 def index(request):
-    titles = Category.objects.all()
+    categories = Category.objects.all()
     products = Product.objects.all()
     orders = []
-    order_list = request.COOKIES.get("orders")
-    total_price = request.COOKIES.get("total_price", 0)
-
-    if order_list:
-        for key, value in json.loads(order_list).items():
+    orders_list = request.COOKIES.get("orders")
+    total_price = request.COOKIES.get("total_price",0)
+    print(orders_list)
+    print(total_price)
+    if orders_list:
+        for key, val in json.loads(orders_list).items():
             orders.append(
                 {
-                    "product": Product.objects.get(pk=int(key)),
-                    "count": value
+                "product": Product.objects.get(pk=int(key)),
+                "count": val
                 }
             )
-
-
     ctx = {
-        'categories': titles,
+        'categories': categories,
         'products': products,
-        'orders': orders,
-        'total_price': total_price,
+        'orders':orders,
+        'total_price':total_price,
         'MEDIA_ROOT': MEDIA_ROOT
     }
 
     response = render(request, 'food/index.html', ctx)
+    response.set_cookie("greeting", 'hello')
     return response
 
 def main_order(request):
-    model = Customer()
+    model=Customer()
     if request.POST:
         try:
             model = Customer.objects.get(phone_number=request.POST.get("phone_number", ""))
         except:
             model = Customer()
-        form = CustomerFrom(request.POST or None, instance=model)
+        form = CustomerForm(request.POST or None, instance=model)
         if form.is_valid():
             customer = form.save()
             formOrder = OrderForm(request.POST or None, instance=Order())
             if formOrder.is_valid():
                 order = formOrder.save(customer=customer)
-                print("order:", order)
-                order_list = request.COOKIES.get("orders")
+                orders_list = request.COOKIES.get("orders")
 
-                for key, value in json.loads(order_list).items():
+
+                for key,value in json.loads(orders_list).items():
                     product = get_product_by_id(int(key))
+
                     counts = value
                     order_product = OrderProduct(
-                        count = counts,
-                        price = product["price"],
+                        count=counts,
+                        price = product['price'],
                         product_id = product['id'],
                         order_id = order.id
                     )
                     order_product.save()
 
-                    return redirect("index")
+                return redirect("index")
             else:
                 print(formOrder.errors)
         else:
@@ -87,15 +87,15 @@ def main_order(request):
         for key, val in json.loads(orders_list).items():
             orders.append(
                 {
-                    "product": Product.objects.get(pk=int(key)),
-                    "count": val
+                "product": Product.objects.get(pk=int(key)),
+                "count": val
                 }
             )
     ctx = {
         'categories': categories,
         'products': products,
-        'orders': orders,
-        'total_price': total_price,
+        'orders':orders,
+        'total_price':total_price,
         'MEDIA_ROOT': MEDIA_ROOT,
     }
 

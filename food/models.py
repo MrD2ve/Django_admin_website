@@ -1,14 +1,10 @@
 from django.db import models
-from django.utils import timezone
 
-
-# Create your models here.
 class Category(models.Model):
     title = models.CharField(max_length=100, null=False, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return self.title
-
 
 class Product(models.Model):
     title = models.CharField(max_length=100, null=False, blank=False)
@@ -36,7 +32,7 @@ class Customer(models.Model):
 
 class Order(models.Model):
     payment_type = models.IntegerField(null=False, blank=False)
-    status = models.IntegerField(null=False, blank=False, default=1)
+    status = models.IntegerField(null=False, blank=True, default=1)
     address = models.CharField(max_length=250, null=False, blank=False)
     customer = models.ForeignKey(Customer, null=False, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
